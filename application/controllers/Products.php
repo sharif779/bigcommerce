@@ -1,6 +1,7 @@
 <?php
    
 require APPPATH . 'libraries/REST_Controller.php';
+use Bigcommerce\Api\Client as Bigcommerce;
      
 class Products extends REST_Controller {
     
