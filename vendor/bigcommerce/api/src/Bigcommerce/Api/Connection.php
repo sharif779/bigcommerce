@@ -365,7 +365,7 @@ class Connection
         if (is_array($query)) {
             $url .= '?' . http_build_query($query);
         }
-
+        log_me($url);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_POST, false);

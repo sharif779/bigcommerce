@@ -456,7 +456,7 @@ class Client
     public static function getTime()
     {
         $response = self::connection()->get(self::$api_path . '/time');
-
+        
         if ($response == false || is_string($response)) {
             return $response;
         }
