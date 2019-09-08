@@ -54,3 +54,4 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['api/v'.API_VERSION.'/products_sync_branddistribution']['GET']="products/upload_products_db";//Get User
 $route['api/v'.API_VERSION.'/products_upload_gonzoo']['GET']="products/upload_products_gonzoo";//Get User
+$route['api/v'.API_VERSION.'/categories_sync_db']['GET']="products/upload_categories_db";//Get User

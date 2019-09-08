@@ -87,3 +87,6 @@ defined('API_VERSION')        OR define('API_VERSION', 1); // no errors
 defined('DEBUG_ERROR_CUSTOM')        OR define('DEBUG_ERROR_CUSTOM', FALSE); // Change CI errormessage format
 defined('API_KEY')        OR define('API_KEY', "5f4dcc3b5aa765d61d8327deb882cf99"); // Change CI errormessage format
 defined('CSV_FILE_PATH')        OR define('CSV_FILE_PATH', "/tmp/products.csv"); // Change CI errormessage format
+defined('X_AUTH_CLIENT')        OR define('X_AUTH_CLIENT', "499qpjwvo9g9odjavymc0l4fpp3d7y7"); // Change CI errormessage format
+defined('X_AUTH_TOKEN')        OR define('X_AUTH_Token', "8sgxuy7ausj1mcjjekucq29xevbmw0z"); // Change CI errormessage format
+defined('STORE')        OR define('STORE', "eu1qmezkwt"); // Change CI errormessage format
