@@ -15,16 +15,11 @@ class Products_model extends CI_Model {
         }
         
     }
-    public function get_Categorie_id_db($cat,$service){
+    public function get_Categorie_id_db($cat,$service,$sottocat){
         $data=array();
-        $context=$cat;
-        if($cat=='clothing' && $service=="men"){
-            $context="Men’s Clothing";
-        }
-        if($cat=='clothing' && $service=="woman"){
-            $context="Women’s Clothing";
-        }
-        $this->db->like("name",$context);
+        $this->db->like("bigcommerce_cat",$cat);
+        $this->db->where("bigcommerce_service",$service);
+        $this->db->like("bigcommerce_Sottocategorie",$sottocat);
         $this->db->select("id");
         $categories=$this->db->get('categories')->result_array();
         foreach($categories as $val){

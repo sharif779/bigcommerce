@@ -72,7 +72,7 @@ class Products extends REST_Controller {
                 $temp=array();
                 $option_values1=array();
                 $option_values2=array();
-                $categories=$this->products_model->get_Categorie_id_db($prod['Categorie'],$prod['service']);
+                $categories=$this->products_model->get_Categorie_id_db($prod['Categorie'],$prod['service'],$prod['Sottocategorie']);
                 $variants=array();
                 $color1=$prod['7dayssale'];
                 $color2=$prod['partner'];
@@ -101,6 +101,7 @@ class Products extends REST_Controller {
                 break;
             }
             $i=$i+500;
+            log_me($res);
             $return=$this->bigcommerceapi->big_commerce_post($url, json_encode($res));
             
         }
@@ -113,7 +114,7 @@ class Products extends REST_Controller {
         $res=$this->bigcommerceapi->big_commerce_get($url);
         $convert_price=$price;
         if(isJson($res)){
-            $data= json_decode($res);
+            $data= json_decode($res,true);
             foreach ($data as $dta){
                 if($dta['currency_code']=$price_to){
                     $convert_price=$price/$dta['currency_exchange_rate'];

@@ -5,6 +5,7 @@
         <group>
             <file>file:/var/www/html/krasnop/index.php</file>
             <file>file:/var/www/html/krasnop/application/models/Products_model.php</file>
+            <file>file:/var/www/html/krasnop/application/config/config.php</file>
             <file>file:/var/www/html/krasnop/application/config/routes.php</file>
             <file>file:/var/www/html/krasnop/vendor/composer/autoload_real.php</file>
             <file>file:/var/www/html/krasnop/application/helpers/custom_function_helper.php</file>

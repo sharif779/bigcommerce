@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 01, 2019 at 06:29 PM
+-- Generation Time: Sep 09, 2019 at 05:45 PM
 -- Server version: 5.7.27-0ubuntu0.16.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.6
 
@@ -22,6 +22,7 @@ USE `shopping`;
 -- Table structure for table `branddistribution_products`
 --
 
+DROP TABLE IF EXISTS `branddistribution_products`;
 CREATE TABLE `branddistribution_products` (
   `record_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `product_id` int(50) NOT NULL,
@@ -63,8 +64,45 @@ CREATE TABLE `branddistribution_products` (
   `barcode` text COLLATE utf8_unicode_ci,
   `model_size` text COLLATE utf8_unicode_ci,
   `model_quantity` text COLLATE utf8_unicode_ci,
-  `insert_flag` int(1) NOT NULL DEFAULT '0'
+  `insert_flag` int(1) NOT NULL DEFAULT '1',
+  `income` int(10) NOT NULL DEFAULT '100'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+  `id` int(20) NOT NULL,
+  `bigcommerce_cat` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bigcommerce_Sottocategorie` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bigcommerce_service` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `branddistribution_service` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `branddistribution_cat` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `branddistribution_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `bigcommerce_cat`, `bigcommerce_Sottocategorie`, `bigcommerce_service`, `branddistribution_service`, `branddistribution_cat`, `branddistribution_name`) VALUES
+(81, 'clothing', 'outerwear-jackets', 'women', 'Women', 'Clothing', 'Coats'),
+(107, 'clothing', 'jeans', 'women', 'Women', 'Clothing', 'Jeans'),
+(104, 'clothing', 'Lingerie, nightwear & underwear', 'woman', 'Women', 'Underwear', 'G-strings'),
+(108, 'clothing', 'pants-leggings', 'women', 'Women', 'Clothing', 'Short'),
+(117, 'clothing', 'sell-offers', 'women', 'Women', 'Clothing', ''),
+(106, 'clothing', 'sportswear', 'women', 'Women', 'Clothing', 'Tracksuit pants'),
+(103, 'clothing', 'tops-sets', 'women', 'Women', 'Clothing', 'Shirts'),
+(105, 'clothing', 'swimwear-and-beachwear', 'women', 'Women', 'Clothing', ''),
+(134, 'clothing', 'socks-tights', 'women', 'Women', 'Clothing', ''),
+(475, 'clothing', 'dresses', 'women', 'Women', 'Clothing', 'Dresses'),
+(476, 'clothing', 'skirts', 'women', 'Women', 'Clothing', 'skirts'),
+(86, 'clothing', 'jeans', 'men', 'Men', 'Clothing', 'Jeans'),
+(79, 'clothing', 'activewear', 'men', 'Men', '', '');
 
 -- --------------------------------------------------------
 
@@ -72,6 +110,7 @@ CREATE TABLE `branddistribution_products` (
 -- Table structure for table `keys`
 --
 
+DROP TABLE IF EXISTS `keys`;
 CREATE TABLE `keys` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -89,6 +128,7 @@ CREATE TABLE `keys` (
 -- Table structure for table `logs`
 --
 
+DROP TABLE IF EXISTS `logs`;
 CREATE TABLE `logs` (
   `id` int(11) NOT NULL,
   `uri` varchar(255) NOT NULL,
