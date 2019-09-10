@@ -55,9 +55,8 @@ class Products extends REST_Controller {
         }
     }
     public function send_order_to_branddistribution_get(){
-        $url="https://www.brandsdistribution.com/restful/ghost/supplierorder/acquire/";
-        $res= branddistribution_curl_request($url, false);
-        $this->products_model->upload_csv_into_db();
+        $url="https://api.bigcommerce.com/stores/".STORE."/v2/orders";
+        $res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,"/tmp/orders.json");
         $this->response(array("res"=>"sucessfully uploaded to db"), REST_Controller::HTTP_OK);
         
     }
@@ -69,6 +68,9 @@ class Products extends REST_Controller {
             $products=$this->products_model->get_branddistribution_data(2,$i);//limit,offset
             $res=array();
             foreach($products as $prod){
+                if($prod['insert_flag']==1){
+                    continue;
+                }
                 $temp=array();
                 $option_values1=array();
                 $option_values2=array();
@@ -93,19 +95,23 @@ class Products extends REST_Controller {
                 $temp['type']='physical';
                 $temp['price']=$this->convert_price($prod['price_novat'])+$prod['income'];
                 $temp['categories']=$categories;
-                $temp['variants']=$variants;
+                //$temp['variants']=$variants;
                 $temp['Origin Locations']='000002';
                 $res=$temp;
+                $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
+                $product_det= json_decode($product_details,true);
+                if(isset($product_det['data'])){
+                    $product_id=$product_det['data']['id'];
+                    $this->set_meta_data_branddistro($product_id);
+                    $this->products_model->sync_insert_flag_db($prod['name']);
+                }
             }
             if($i>1000){
                 break;
             }
             $i=$i+500;
-            log_me($res);
-            $return=$this->bigcommerceapi->big_commerce_post($url, json_encode($res));
-            
         }
-        $this->response($return, REST_Controller::HTTP_OK);
+        $this->response("Successfully product added", REST_Controller::HTTP_OK);
         
     }
     
@@ -123,6 +129,16 @@ class Products extends REST_Controller {
             
         }
         return $convert_price;
+    }
+    
+    public function set_meta_data_branddistro($product_id){
+        $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products/{$product_id}/metafields";
+        $temp=array();
+        $temp["permission_set"]="write";
+        $temp["key"]="shipping-origins";
+        $temp["value"]="000002";
+        $temp["namespace"]="shipping.shipperhq";
+        $res=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
     }
     
 }

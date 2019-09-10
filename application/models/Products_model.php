@@ -47,4 +47,11 @@ class Products_model extends CI_Model {
     public function truncate_table($table_name){
         $this->db->truncate($table_name);
     }
+    public function sync_insert_flag_db($product_name){
+        
+        $this->db->set('insert_flag',1);
+        $this->db->where("name",$product_name);
+        $this->db->update('branddistribution_products');
+        
+    }
 }
