@@ -2,7 +2,11 @@
 class Products_model extends CI_Model {
     
     public function upload_csv_into_db(){
-        $sql="LOAD DATA LOCAL INFILE '".CSV_FILE_PATH."' INTO TABLE branddistribution_products FIELDS TERMINATED BY ','ENCLOSED BY '\"'LINES TERMINATED BY '\n' IGNORE 1 LINES";
+        $file_path=FCPATH."/resources/products.csv";
+        if(filesize($file_path)) {
+            $this->db->truncate('branddistribution_products');
+        }
+        $sql="LOAD DATA LOCAL INFILE '".$file_path."' INTO TABLE branddistribution_products FIELDS TERMINATED BY ','ENCLOSED BY '\"'LINES TERMINATED BY '\n' IGNORE 1 LINES";
         $query = $this->db->query($sql);
     }
     public function upload_categories_into_db($data){

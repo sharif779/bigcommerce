@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 09, 2019 at 05:45 PM
+-- Generation Time: Sep 11, 2019 at 06:23 PM
 -- Server version: 5.7.27-0ubuntu0.16.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.6
 
@@ -64,7 +64,7 @@ CREATE TABLE `branddistribution_products` (
   `barcode` text COLLATE utf8_unicode_ci,
   `model_size` text COLLATE utf8_unicode_ci,
   `model_quantity` text COLLATE utf8_unicode_ci,
-  `insert_flag` int(1) NOT NULL DEFAULT '1',
+  `insert_flag` int(1) NOT NULL DEFAULT '0',
   `income` int(10) NOT NULL DEFAULT '100'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -102,7 +102,39 @@ INSERT INTO `categories` (`id`, `bigcommerce_cat`, `bigcommerce_Sottocategorie`,
 (475, 'clothing', 'dresses', 'women', 'Women', 'Clothing', 'Dresses'),
 (476, 'clothing', 'skirts', 'women', 'Women', 'Clothing', 'skirts'),
 (86, 'clothing', 'jeans', 'men', 'Men', 'Clothing', 'Jeans'),
-(79, 'clothing', 'activewear', 'men', 'Men', '', '');
+(79, 'clothing', 'activewear', 'men', 'Men', '', ''),
+(93, 'clothing', 't-shirts-tops', 'men', 'Men', 'Clothing', 'Polo'),
+(85, 'clothing', 'coats-jackets', 'men', 'Men', 'Clothing', 'Jackets'),
+(483, 'clothing', 'suits', 'men', 'Men', 'Clothing', 'Suits'),
+(92, 'clothing', 'trousers', 'men', 'Men', 'Clothing', 'Trousers'),
+(88, 'clothing', 'shirts', 'men', 'Men', 'Clothing', 'Shirts'),
+(89, 'clothing', 'shorts', 'men', 'Men', 'Clothing', 'Short'),
+(94, 'clothing', 'underwear-socks', 'men', 'Men', 'Clothing', 'Boxers'),
+(91, 'clothing', 'sweaters-knitwear', 'men', 'Men', 'Clothing', 'Sweatshirts'),
+(78, 'clothing', 'beachwear', 'men', 'Men', 'Clothing', ''),
+(96, 'clothing', 'sale-clothing', 'men', NULL, '', ''),
+(481, 'shoes', 'pumps-heels', 'women', 'Women', 'Shoes', 'Pumps & Heels'),
+(482, 'shoes', 'moccasins', 'women', 'Women', 'Shoes', 'Moccasins'),
+(127, 'shoes', 'boots', 'women', 'Women', 'Shoes', 'Boots'),
+(131, 'shoes', 'sandals', 'women', 'Women', 'Shoes', 'Sandals'),
+(480, 'shoes', 'slip-on', 'women', 'Women', 'Shoes', 'Slip-on'),
+(132, 'shoes', 'sliders-flip-flops', 'women', 'Women', 'Shoes', 'Flip Flops'),
+(133, 'shoes', 'sneakers', 'women', 'Women', 'Shoes', 'Sneakers'),
+(129, 'shoes', 'flat-shoes', 'women', 'Women', 'Shoes', 'Ballet flats'),
+(477, 'shoes', 'wedges', 'women', 'Women', 'Shoes', 'Wedges'),
+(136, 'shoes', 'boots', 'men', 'Men', 'Shoes', 'Ankle boots'),
+(137, 'shoes', 'espadrilles', 'men', 'Men', 'Shoes', ''),
+(138, 'shoes', 'shoes', 'men', 'Men', 'Shoes', 'Lace up'),
+(139, 'shoes', 'sliders-flip-flops', 'men', 'Men', 'Shoes', 'Flip Flops'),
+(140, 'shoes', 'sneakers', 'men', 'Men', 'Shoes', 'Sneakers'),
+(478, 'shoes', 'moccasins', 'men', 'Men', 'Shoes', 'Moccasins'),
+(479, 'shoes', 'slip-on', 'men', 'Men', 'Shoes', 'Slip-on'),
+(152, 'bags', 'bags', 'men', 'Men', 'Bags', 'Rucksacks'),
+(474, 'bags', 'bags', 'women', 'Women', 'Bags', 'Handbags'),
+(121, 'bijouterie', 'pendants-beads', 'women', 'Women', '', ''),
+(114, 'bijouterie', 'rings', 'women', 'Women', '', ''),
+(113, 'bijouterie', 'earrings', 'women', 'Women', '', ''),
+(120, 'bijouterie', 'other', 'women', 'Women', '', '');
 
 -- --------------------------------------------------------
 

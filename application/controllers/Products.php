@@ -14,6 +14,7 @@ class Products extends REST_Controller {
        $this->load->database();
        $this->load->helper('custom_function');
        $this->load->library('bigcommerceapi');
+       $this->load->library('Array2XML');
        $this->load->model('products_model');
     }
        
@@ -56,8 +57,64 @@ class Products extends REST_Controller {
     }
     public function send_order_to_branddistribution_get(){
         $url="https://api.bigcommerce.com/stores/".STORE."/v2/orders";
-        $res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,"/tmp/orders.json");
-        $this->response(array("res"=>"sucessfully uploaded to db"), REST_Controller::HTTP_OK);
+        //$res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,FCPATH."/resources/orders.json");
+        $listener = new \JsonStreamingParser\Listener\InMemoryListener();
+        $stream = fopen(FCPATH."/resources/orders.json", 'rb');
+        try {
+            $parser = new \JsonStreamingParser\Parser($stream, $listener);
+            $parser->parse();
+            fclose($stream);
+        } catch (Exception $e) {
+            fclose($stream);
+            throw $e;
+        }
+        $send_order=array();
+        $send_order['products']['product']=array();
+        foreach($listener->getJson() as $orderdata){
+            if(!isset($orderdata['products']['url'])){
+                continue;
+            }
+            $order_product=$this->bigcommerceapi->big_commerce_get($orderdata['products']['url']);
+            $product_details=json_decode($order_product,true);
+            $product_id_arr=array();
+            $sku="";
+            $quantity=1;
+            foreach($product_details as $product_i){
+                $product_id_arr[]=$product_i['product_id'];
+                $sku=$product_i['sku'];
+                $quantity=$product_i['quantity'];
+            }
+            foreach($product_id_arr as $product_id){
+                $meta_url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products/$product_id/metafields";
+                $meta_data=$this->bigcommerceapi->big_commerce_get($meta_url);
+                $meta= json_decode($meta_data,true);
+                if(isset($meta['data'])){
+                    $is_origin=false;
+                    foreach($meta['data'] as $me_dta){
+                        if(isset($me_dta['key']) && $me_dta['key']=="shipping-origins" && isset($me_dta['value']) && $me_dta['value']=="000002"){
+                            $is_origin=true;
+                        }
+                    }
+                    if($is_origin){
+                        $stock_id= str_replace("BD-","", $sku);
+                        $send_products=array(
+                            '@attributes' => array(
+                                'stock_id' => $stock_id,
+                                'quantity'=>$quantity
+                            )
+                        );
+                        $send_order['products']['product'][]=$send_products;
+                        
+                    }
+                }
+                
+            }
+        }
+        $xml = Array2XML::createXML("supplierorder", $send_order);//
+        $order_xml=$xml->saveXML();
+        $order_url="https://www.brandsdistribution.com/restful/ghost/supplierorder/acquire/";
+        $response=branddistribution_curl_request($order_url, true,$order_xml);
+        $this->response(array("res"=>$response), REST_Controller::HTTP_OK);
         
     }
     public function upload_products_gonzoo_get(){
@@ -65,7 +122,7 @@ class Products extends REST_Controller {
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products";
         $return=array();
         while(true){
-            $products=$this->products_model->get_branddistribution_data(2,$i);//limit,offset
+            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
             $res=array();
             foreach($products as $prod){
                 if($prod['insert_flag']==1){
@@ -93,10 +150,11 @@ class Products extends REST_Controller {
                 $temp['name']=$prod['name'];
                 $temp['weight']=$prod['weight'];
                 $temp['type']='physical';
+                $temp['sku']='BD-'.$prod['product_id'];
                 $temp['price']=$this->convert_price($prod['price_novat'])+$prod['income'];
                 $temp['categories']=$categories;
                 //$temp['variants']=$variants;
-                $temp['Origin Locations']='000002';
+                //$temp['Origin Locations']='000002';
                 $res=$temp;
                 $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
                 $product_det= json_decode($product_details,true);
@@ -106,7 +164,7 @@ class Products extends REST_Controller {
                     $this->products_model->sync_insert_flag_db($prod['name']);
                 }
             }
-            if($i>1000){
+            if(sizeof($products)<499){
                 break;
             }
             $i=$i+500;

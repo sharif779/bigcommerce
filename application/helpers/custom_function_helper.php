@@ -157,23 +157,37 @@ if ( ! function_exists('branddistribution_curl_request'))
                 CURLOPT_URL => $url,
             ]);
         }else{
+            $headers = array(
+                'Content-Type:application/xml',
+                'Authorization: Basic '. base64_encode("82115d12-bc25-47ff-9e8b-72b02e205d21:123Ebay123") // <---
+            );
             curl_setopt_array($curl, [
                 CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_HTTPHEADER=>$headers,
                 CURLOPT_URL => $url,
                 CURLOPT_POST => 1,
                 CURLOPT_POSTFIELDS => $data
             ]);
         }
-        if(!file_exists(CSV_FILE_PATH)){
-            shell_exec("touch ".CSV_FILE_PATH);
-            shell_exec("chmod 777 ".CSV_FILE_PATH);
+        $file_path=FCPATH."/resources/products.csv";
+        if(!file_exists($file_path)){
+            shell_exec("touch ".$file_path);
+            shell_exec("chmod 777 ".$file_path);
             
         }
-        // Send the request & save response to $resp
-        file_put_contents(CSV_FILE_PATH,curl_exec($curl));
-        // Close request to clear up some resources
-        curl_close($curl);
-        return array("res"=>"sucessfully uploaded to db");
+        if($is_post){
+            $response=curl_exec($curl);
+            curl_close($curl);
+            return array("res"=>$response);
+        }else{
+            // Send the request & save response to $resp
+            file_put_contents($file_path,curl_exec($curl));
+            // Close request to clear up some resources
+            curl_close($curl);
+            return array("res"=>"sucessfully uploaded to db");
+        }
+        
+        
     }
 }
 //for curl request
