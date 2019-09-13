@@ -2,7 +2,7 @@
 class Products_model extends CI_Model {
     
     public function upload_csv_into_db(){
-        $file_path=FCPATH."/resources/products.csv";
+        $file_path=FCPATH."resources/products.csv";
         if(filesize($file_path)) {
             $this->db->truncate('branddistribution_products');
         }

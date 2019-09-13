@@ -59,7 +59,7 @@ class Products extends REST_Controller {
         $url="https://api.bigcommerce.com/stores/".STORE."/v2/orders";
         //$res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,FCPATH."/resources/orders.json");
         $listener = new \JsonStreamingParser\Listener\InMemoryListener();
-        $stream = fopen(FCPATH."/resources/orders.json", 'rb');
+        $stream = fopen(FCPATH."resources/orders.json", 'rb');
         try {
             $parser = new \JsonStreamingParser\Parser($stream, $listener);
             $parser->parse();
@@ -122,10 +122,10 @@ class Products extends REST_Controller {
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products";
         $return=array();
         while(true){
-            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
+            $products=$this->products_model->get_branddistribution_data(2,$i);//limit,offset
             $res=array();
             foreach($products as $prod){
-                if($prod['insert_flag']==1){
+                if($prod['insert_flag']==1 || $prod['record_type']=="MODEL"){
                     continue;
                 }
                 $temp=array();
@@ -147,15 +147,33 @@ class Products extends REST_Controller {
                     $variants_1=array("sku"=>"SKU-". strtoupper($color1),'option_values'=>$option_values1);
                     $variants[]=$variants_1;
                 }
+                $images=array();
+                if(trim($prod['picture 1']) !=""){
+                    $images[]=array(
+                        "image_url"=>$prod['picture 1']
+                    );
+                }
+                if(trim($prod['picture 2'])!==""){
+                    $images[]=array(
+                        "image_url"=>$prod['picture 2']
+                    );
+                }
+                if(trim($prod['picture 3'])!==""){
+                    $images[]=array(
+                        "image_url"=>$prod['picture 3']
+                    );
+                }
                 $temp['name']=$prod['name'];
                 $temp['weight']=$prod['weight'];
                 $temp['type']='physical';
                 $temp['sku']='BD-'.$prod['product_id'];
                 $temp['price']=$this->convert_price($prod['price_novat'])+$prod['income'];
                 $temp['categories']=$categories;
+                $temp['images']=$images;
                 //$temp['variants']=$variants;
                 //$temp['Origin Locations']='000002';
                 $res=$temp;
+                log_me(json_encode($temp));
                 $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
                 $product_det= json_decode($product_details,true);
                 if(isset($product_det['data'])){
