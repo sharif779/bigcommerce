@@ -1,7 +1,9 @@
 <?php
    
 require APPPATH . 'libraries/REST_Controller.php';
-     
+//lets Use the Spout Namespaces
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Common\Type;
 class Products extends REST_Controller {
     
 	  /**
@@ -16,6 +18,10 @@ class Products extends REST_Controller {
        $this->load->library('bigcommerceapi');
        $this->load->library('Array2XML');
        $this->load->model('products_model');
+       $this->xls_column=array("record_type","product_id","brand","name","code","product_quantity","street_price","suggested_price","price_novat"
+           ,"plain_description","weight","picture 1","picture 2","picture 3","madein","Firme","heel","lenght","mainmaterial","Categorie","Produzione","Sottocategorie",
+           "Promo","Discount Percentage","season","color","Warehouse2","bicolors","Genere","productname","model_id","barcode","model_size","model_quantity"
+           );
     }
        
     /**
@@ -35,11 +41,50 @@ class Products extends REST_Controller {
         $this->response($data, REST_Controller::HTTP_OK);
     }
     public function upload_products_db_get(){
-        $url="https://www.brandsdistribution.com/restful/export/api/products.csv";
-        $res= branddistribution_curl_request($url, false);
-        $this->products_model->upload_csv_into_db();
+        $url="https://www.brandsdistribution.com/restful/export/api/products.xlsx";
+        //$res= branddistribution_curl_request($url, false);
+        //$this->products_model->upload_csv_into_db();
+        $this->upload_xls_into_db();
         $this->response(array("res"=>"sucessfully uploaded to db"), REST_Controller::HTTP_OK);
         
+    }
+    public function upload_xls_into_db(){
+        try {
+           
+               //Lokasi file excel       
+               $file_path =FCPATH."resources/products.xlsx";
+               $reader = ReaderFactory::create(Type::XLSX); //set Type file xlsx
+               $reader->open($file_path); //open the file     
+                $i = 0; 
+                /**                  
+                * Sheets Iterator. Kali aja multiple sheets                  
+                **/           
+                foreach ($reader->getSheetIterator() as $sheet) {
+                    //Rows iterator                
+                    foreach ($sheet->getRowIterator() as $row) {
+                        $temp=array();
+                        if($i==0){
+                            $this->xls_column=$row;//for column
+                        }else{
+                            if(isset($row[0]) && $row[0]="PRODUCT"){
+                                foreach($this->xls_column as $key=>$column){
+                                    $temp[$column]=$row[$key];
+                                }
+                                $this->products_model->upload_xls_into_db($temp);
+                            }
+                        }
+                        $i++;
+                    }
+                  
+                }
+                //log_me($this->xls_column);
+                $reader->close();
+
+      } catch (Exception $e) {
+
+              echo $e->getMessage();
+              exit;   
+      }
     }
     public function upload_categories_db_get(){
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/categories";
@@ -148,19 +193,19 @@ class Products extends REST_Controller {
                     $variants[]=$variants_1;
                 }
                 $images=array();
-                if(trim($prod['picture 1']) !=""){
+                if(trim($prod['picture1']) !=""){
                     $images[]=array(
-                        "image_url"=>$prod['picture 1']
+                        "image_url"=>$prod['picture1']
                     );
                 }
-                if(trim($prod['picture 2'])!==""){
+                if(trim($prod['picture2'])!==""){
                     $images[]=array(
-                        "image_url"=>$prod['picture 2']
+                        "image_url"=>$prod['picture2']
                     );
                 }
-                if(trim($prod['picture 3'])!==""){
+                if(trim($prod['picture3'])!==""){
                     $images[]=array(
-                        "image_url"=>$prod['picture 3']
+                        "image_url"=>$prod['picture3']
                     );
                 }
                 $temp['name']=$prod['name'];

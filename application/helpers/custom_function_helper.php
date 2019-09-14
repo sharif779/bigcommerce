@@ -169,7 +169,7 @@ if ( ! function_exists('branddistribution_curl_request'))
                 CURLOPT_POSTFIELDS => $data
             ]);
         }
-        $file_path=FCPATH."resources/products.csv";
+        $file_path=FCPATH."resources/products.xls";
         if(!file_exists($file_path)){
             shell_exec("touch ".$file_path);
             shell_exec("chmod 777 ".$file_path);

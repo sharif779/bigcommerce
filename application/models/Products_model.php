@@ -9,6 +9,38 @@ class Products_model extends CI_Model {
         $sql="LOAD DATA LOCAL INFILE '".$file_path."' INTO TABLE branddistribution_products FIELDS TERMINATED BY ','ENCLOSED BY '\"'LINES TERMINATED BY '\n' IGNORE 1 LINES";
         $query = $this->db->query($sql);
     }
+    public function upload_xls_into_db($data){
+        log_me($data);
+        $fields=$this->db->list_fields('branddistribution_products');
+        if(isset($data['picture 1'])){
+            $data['picture1']=$data['picture 1'];
+        }
+        if(isset($data['picture 2'])){
+            $data['picture1']=$data['picture 2'];
+        }
+        if(isset($data['picture 3'])){
+            $data['picture1']=$data['picture 3'];
+        }
+        if(isset($data['Discount Percentage'])){
+            $data['DiscountPercentage']=$data['Discount Percentage'];
+        }
+        foreach($data as $key=>$v){
+            if(!in_array($key, $fields)){
+                unset($data[$key]);
+            }
+        }
+        
+        $this->db->where('product_id', $data['product_id']);
+        $this->db->from('branddistribution_products');
+        $count = $this->db->count_all_results();
+        if($count==0){
+            $this->db->insert('branddistribution_products', $data);
+        }else{
+            unset($data['product_id']);
+            unset($data['code']);
+            $this->db->update('branddistribution_products', $data);
+        }
+    }
     public function upload_categories_into_db($data){
         if(isset($data['id']) && isset($data['parent_id'])){
             $val['id']=$data['id'];
