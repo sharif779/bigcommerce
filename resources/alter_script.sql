@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2019 at 06:23 PM
+-- Generation Time: Sep 24, 2019 at 04:26 PM
 -- Server version: 5.7.27-0ubuntu0.16.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.6
 
@@ -35,9 +35,9 @@ CREATE TABLE `branddistribution_products` (
   `price_novat` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plain_description` text COLLATE utf8_unicode_ci,
   `weight` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `picture 1` text COLLATE utf8_unicode_ci,
-  `picture 2` text COLLATE utf8_unicode_ci,
-  `picture 3` text COLLATE utf8_unicode_ci,
+  `picture1` text COLLATE utf8_unicode_ci,
+  `picture2` text COLLATE utf8_unicode_ci,
+  `picture3` text COLLATE utf8_unicode_ci,
   `madein` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `Firme` text COLLATE utf8_unicode_ci,
   `heel` text COLLATE utf8_unicode_ci,
@@ -47,7 +47,7 @@ CREATE TABLE `branddistribution_products` (
   `Produzione` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `Sottocategorie` text COLLATE utf8_unicode_ci,
   `Promo` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Discount Percentage` text COLLATE utf8_unicode_ci,
+  `DiscountPercentage` text COLLATE utf8_unicode_ci,
   `season` text COLLATE utf8_unicode_ci,
   `7dayssale` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `color` text COLLATE utf8_unicode_ci,
