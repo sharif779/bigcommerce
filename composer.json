@@ -13,7 +13,9 @@
 	"require": {
 		"php": ">=5.3.7",
 		"bigcommerce/api": "^3.2",
-		"salsify/json-streaming-parser": "^7.0"
+		"salsify/json-streaming-parser": "^7.0",
+		"box/spout": "^2.7",
+                "guzzlehttp/guzzle": "^6.3"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

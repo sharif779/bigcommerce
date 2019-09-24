@@ -1,9 +1,11 @@
 <?php
    
 require APPPATH . 'libraries/REST_Controller.php';
+require APPPATH . 'libraries/XMLReader.php';
 //lets Use the Spout Namespaces
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
+use Parser\XMLReader;
 class Products extends REST_Controller {
     
 	  /**
@@ -41,15 +43,74 @@ class Products extends REST_Controller {
         $this->response($data, REST_Controller::HTTP_OK);
     }
     public function upload_products_db_get(){
-        $url="https://www.brandsdistribution.com/restful/export/api/products.xlsx";
+        //$url="https://www.brandsdistribution.com/restful/export/products.xls?acceptedlocales=en_US&output-filetype=xls";
         //$res= branddistribution_curl_request($url, false);
-        //$this->products_model->upload_csv_into_db();
-        $this->upload_xls_into_db();
+       //$this->products_model->upload_csv_into_db();
+//        $this->upload_xls_into_db();
+        $this->upload_xml_into_db();
         $this->response(array("res"=>"sucessfully uploaded to db"), REST_Controller::HTTP_OK);
         
     }
+     public function upload_xml_into_db(){
+        $xml = new XMLReader(FCPATH. 'resources'); // Download and state files!
+        $xml->setCredentials(
+            'https://www.brandsdistribution.com/restful/export/api/products.xml', // endpoint
+            '82115d12-bc25-47ff-9e8b-72b02e205d21',
+            '123Ebay123'
+        );
+        $xml->download();
+        $xml->parse();
+        while ($node = $xml->getItem()){
+            $node_arr=xml2array($node);
+            if(!isset($node_arr['id']) || !isset($node_arr['pictures']['image'])){
+                continue;
+            }
+            $temp=array();
+            $temp['record_type']="PRODUCT";
+            $temp['product_id']=$node_arr['id'];
+            $temp['brand']=$node_arr['brand'];
+            $temp['name']=$node_arr['name'];
+            $temp['code']=$node_arr['code'];
+            $temp['product_quantity']=$node_arr['availability'];
+            $temp['street_price']=$node_arr['streetPrice'];
+            $temp['suggested_price']=$node_arr['suggestedPrice'];
+            $temp['price_novat']=$node_arr['taxable'];
+            $temp['weight']=$node_arr['weight'];
+            $temp['plain_description']= strip_tags($node_arr['description']);
+            $picture=xml2array($node_arr['pictures']['image']);
+            $temp['picture1']=isset($picture[0]['url'])?"https://www.brandsdistribution.com".$picture[0]['url']:"";
+            $temp['picture2']=isset($picture[1]['url'])?"https://www.brandsdistribution.com".$picture[1]['url']:"";
+            $temp['picture3']=isset($picture[2]['url'])?"https://www.brandsdistribution.com".$picture[2]['url']:"";
+            if(is_array($node_arr['madein'])){
+                if(isset($node_arr['madein'][0])){
+                    $temp['madein']=$node_arr['madein'][0];
+                }
+            }else{
+                $temp['madein']=$node_arr['madein'];
+            }
+            $tags=xml2array($node_arr['tags']['tag']);
+            foreach($tags as $tag){
+                if($tag['name']=="category"){
+                    $tag['name']="Categorie";
+                }
+                if($tag['name']=="subcategory"){
+                    $tag['name']="Sottocategorie";
+                }
+                if($tag['name']=="gender"){
+                    $tag['name']="service";
+                }
+                $temp[$tag['name']]=$tag['value']['value'];
+            }
+            $models_arr= xml2array($node_arr['models']['model']);
+            $model_quantity= sizeof($models_arr);
+            $temp['model_quantity']=$model_quantity;
+            $this->products_model->upload_xls_into_db($temp);
+        }
+
+     }
     public function upload_xls_into_db(){
         try {
+                
            
                //Lokasi file excel       
                $file_path =FCPATH."resources/products.xlsx";
@@ -71,7 +132,8 @@ class Products extends REST_Controller {
                                     $temp[$column]=$row[$key];
                                 }
                                 $this->products_model->upload_xls_into_db($temp);
-                            }
+                               // log_me($temp);
+                            }//
                         }
                         $i++;
                     }
@@ -167,7 +229,7 @@ class Products extends REST_Controller {
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products";
         $return=array();
         while(true){
-            $products=$this->products_model->get_branddistribution_data(2,$i);//limit,offset
+            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
             $res=array();
             foreach($products as $prod){
                 if($prod['insert_flag']==1 || $prod['record_type']=="MODEL"){
@@ -178,7 +240,7 @@ class Products extends REST_Controller {
                 $option_values2=array();
                 $categories=$this->products_model->get_Categorie_id_db($prod['Categorie'],$prod['service'],$prod['Sottocategorie']);
                 $variants=array();
-                $color1=$prod['7dayssale'];
+                $color1=$prod['color'];
                 $color2=$prod['partner'];
                 if($color1!=$color2){
                     $option_values1[]=array("option_display_name"=>"Color",'label'=>$color1);
@@ -218,7 +280,6 @@ class Products extends REST_Controller {
                 //$temp['variants']=$variants;
                 //$temp['Origin Locations']='000002';
                 $res=$temp;
-                log_me(json_encode($temp));
                 $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
                 $product_det= json_decode($product_details,true);
                 if(isset($product_det['data'])){

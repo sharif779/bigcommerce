@@ -10,7 +10,6 @@ class Products_model extends CI_Model {
         $query = $this->db->query($sql);
     }
     public function upload_xls_into_db($data){
-        log_me($data);
         $fields=$this->db->list_fields('branddistribution_products');
         if(isset($data['picture 1'])){
             $data['picture1']=$data['picture 1'];

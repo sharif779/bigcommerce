@@ -169,7 +169,7 @@ if ( ! function_exists('branddistribution_curl_request'))
                 CURLOPT_POSTFIELDS => $data
             ]);
         }
-        $file_path=FCPATH."resources/products.xls";
+        $file_path=FCPATH."resources/products.xlsx";
         if(!file_exists($file_path)){
             shell_exec("touch ".$file_path);
             shell_exec("chmod 777 ".$file_path);
@@ -232,6 +232,16 @@ if ( ! function_exists('isJson'))
 {    function isJson($string) {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
+    }
+}
+if ( ! function_exists('xml2array'))
+{    
+    function xml2array ( $xmlObject, $out = array () )
+    {
+        foreach ( (array) $xmlObject as $index => $node )
+            $out[$index] = ( is_object ( $node ) ) ? xml2array ( $node ) : $node;
+
+        return $out;
     }
 }
 
