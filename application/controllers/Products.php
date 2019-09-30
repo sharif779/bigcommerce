@@ -76,7 +76,8 @@ class Products extends REST_Controller {
             $temp['suggested_price']=$node_arr['suggestedPrice'];
             $temp['price_novat']=$node_arr['taxable'];
             $temp['weight']=$node_arr['weight'];
-            $temp['plain_description']= strip_tags($node_arr['description']);
+            //$temp['plain_description']= strip_tags($node_arr['description']);
+            $temp['plain_description']= $node_arr['description'];
             $picture=xml2array($node_arr['pictures']['image']);
             $temp['picture1']=isset($picture[0]['url'])?"https://www.brandsdistribution.com".$picture[0]['url']:"";
             $temp['picture2']=isset($picture[1]['url'])?"https://www.brandsdistribution.com".$picture[1]['url']:"";
@@ -262,6 +263,7 @@ class Products extends REST_Controller {
                 }
                 if(trim($prod['picture2'])!==""){
                     $images[]=array(
+			"is_thumbnail"=>true,
                         "image_url"=>$prod['picture2']
                     );
                 }
@@ -270,7 +272,12 @@ class Products extends REST_Controller {
                         "image_url"=>$prod['picture3']
                     );
                 }
+                if(sizeof($images)==0){
+                    continue;
+                }
                 $temp['name']=$prod['name'];
+		$temp['description']=$prod['plain_description'];
+		$temp['brand_name']=$prod['brand'];
                 $temp['weight']=$prod['weight'];
                 $temp['type']='physical';
                 $temp['sku']='BD-'.$prod['product_id'];
