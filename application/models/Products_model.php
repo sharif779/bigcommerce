@@ -53,8 +53,14 @@ class Products_model extends CI_Model {
     public function get_Categorie_id_db($cat,$service,$sottocat){
         $data=array();
         $this->db->like("bigcommerce_cat",$cat);
-        $this->db->where("bigcommerce_service",$service);
-        $this->db->like("bigcommerce_Sottocategorie",$sottocat);
+        if($service=="unisex"){
+            $arr = array('men', 'women');
+            $this->db->where_in("bigcommerce_service",$arr);
+        }else{
+            $this->db->where("bigcommerce_service",$service);
+        }
+        
+        //$this->db->like("bigcommerce_Sottocategorie",$sottocat);
         $this->db->select("id");
         $categories=$this->db->get('categories')->result_array();
         foreach($categories as $val){
@@ -69,7 +75,7 @@ class Products_model extends CI_Model {
     }
     
     public function get_branddistribution_data($limit,$offset){
-        $this->db->where('insert_flag',0);
+        //$this->db->where('insert_flag',0);
         $this->db->limit($limit,$offset);
         $result = $this->db->get('branddistribution_products')->result_array();
         return $result;
@@ -82,10 +88,10 @@ class Products_model extends CI_Model {
     public function truncate_table($table_name){
         $this->db->truncate($table_name);
     }
-    public function sync_insert_flag_db($product_name){
+    public function sync_insert_flag_db($product_id){
         
         $this->db->set('insert_flag',1);
-        $this->db->where("name",$product_name);
+        $this->db->where("product_id",$product_id);
         $this->db->update('branddistribution_products');
         
     }

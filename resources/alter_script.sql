@@ -134,8 +134,16 @@ INSERT INTO `categories` (`id`, `bigcommerce_cat`, `bigcommerce_Sottocategorie`,
 (121, 'bijouterie', 'pendants-beads', 'women', 'Women', '', ''),
 (114, 'bijouterie', 'rings', 'women', 'Women', '', ''),
 (113, 'bijouterie', 'earrings', 'women', 'Women', '', ''),
-(120, 'bijouterie', 'other', 'women', 'Women', '', '');
-
+(120, 'bijouterie', 'other', 'women', 'Women', '', ''),
+(485, 'accessories', 'ties', 'men', 'Men', 'Accessories', 'Ties'),
+(484, 'accessories', 'gloves', 'men', 'Men', 'Accessories', 'Gloves'),
+(149, 'accessories', 'belts', 'men', 'Men', 'Accessories', 'Belts'),
+(197, 'accessories', 'cover-scarves', 'men', 'Men', 'Accessories', 'Scarves'),
+(197, 'accessories', 'cover-scarves', 'women', 'Women', 'Accessories', 'Scarves'),
+(124, 'accessories', 'cover-scarves', 'men', 'Men', 'Accessories', 'Box'),
+(125, 'accessories', 'watches', 'women', 'Women', 'Accessories', 'Watches'),
+(487, 'accessories', 'cases', 'women', 'Women', 'Accessories', 'Cases'),
+(486, 'kids-baby', 'underwear', 'kids', 'Kids', 'Underwear', 'Brief');
 -- --------------------------------------------------------
 
 --

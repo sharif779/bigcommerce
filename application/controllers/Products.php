@@ -292,7 +292,7 @@ class Products extends REST_Controller {
                 if(isset($product_det['data'])){
                     $product_id=$product_det['data']['id'];
                     $this->set_meta_data_branddistro($product_id);
-                    $this->products_model->sync_insert_flag_db($prod['name']);
+                    $this->products_model->sync_insert_flag_db($prod['product_id']);
                 }
             }
             if(sizeof($products)<499){
