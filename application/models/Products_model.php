@@ -52,15 +52,11 @@ class Products_model extends CI_Model {
     }
     public function get_Categorie_id_db($cat,$service,$sottocat){
         $data=array();
-        $this->db->like("bigcommerce_cat",$cat);
-        if($service=="unisex"){
-            $arr = array('men', 'women');
-            $this->db->where_in("bigcommerce_service",$arr);
-        }else{
-            $this->db->where("bigcommerce_service",$service);
-        }
-        
-        //$this->db->like("bigcommerce_Sottocategorie",$sottocat);
+        $gender=ucfirst($service);
+        $category= ucfirst($cat);
+        $this->db->where("branddistribution_service",$gender);
+        $this->db->where("branddistribution_cat",$category);
+        $this->db->like("branddistribution_name",$sottocat);
         $this->db->select("id");
         $categories=$this->db->get('categories')->result_array();
         foreach($categories as $val){
@@ -69,7 +65,18 @@ class Products_model extends CI_Model {
             }
         }
         if(count($data)==0){
-            $data=array(61);
+            $sott_cat_str= str_replace(' ', '', strtolower($sottocat));
+            $sottocat_change=$this->get_german_english_word($sott_cat_str);
+            $this->db->where("branddistribution_service",$gender);
+            $this->db->where("branddistribution_cat",$category);
+            $this->db->like("branddistribution_name",$sottocat_change);
+            $this->db->select("id");
+            $categories=$this->db->get('categories')->result_array();
+            foreach($categories as $val){
+                if(isset($val['id'])){
+                    array_push($data,$val['id']);
+                }
+            }
         }
         return $data;
     }
@@ -94,5 +101,24 @@ class Products_model extends CI_Model {
         $this->db->where("product_id",$product_id);
         $this->db->update('branddistribution_products');
         
+    }
+    public function get_german_english_word($key){//one types of hack ....need to quick solved
+        $lang_arr=array(
+            "pantalone"=>"Trousers",
+            "maglia"=>"Sweaters",
+            "gilet"=>"Sweaters",
+            "zeppa"=>"Wedges",
+            "sandali"=>"Sandals",
+            "occhialidasole"=>"Sunglasses",
+            "camicia"=>"Shirts",
+            "stringata"=>"Lace up",
+            "cappotto"=>"Coats",
+            "decollete"=>"Trousers"
+        );
+        if(isset($lang_arr[$key])){
+            return $lang_arr[$key];
+        }else{
+            return "";
+        }
     }
 }
