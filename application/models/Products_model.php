@@ -78,7 +78,7 @@ class Products_model extends CI_Model {
                 }
             }
         }
-        return $data;
+        return array_unique($data);
     }
     
     public function get_branddistribution_data($limit,$offset){
@@ -113,7 +113,39 @@ class Products_model extends CI_Model {
             "camicia"=>"Shirts",
             "stringata"=>"Lace up",
             "cappotto"=>"Coats",
-            "decollete"=>"Trousers"
+            "giacca"=>"Jackets",
+            "decollete"=>"Coats",
+            "portafoglio"=>"Wallets",
+            "orologio"=>"Watches",
+            "stivaletto"=>"Sandals",
+            "abiti"=>"Dresses",
+            "aspalla"=>"Shoulder bags",
+            "gonna"=>"skirts",
+            "tracolla"=>"Crossbody Bags",
+            "stivale"=>"Boots",
+            "scarpebasse"=>"Flat shoes",
+            "amano"=>"Handbags",
+            "ballerina"=>"Ballet flats",
+            "zaini"=>"Shoulder bags",
+            "pochette"=>"Clutch bags",
+            "cintura"=>"Belts",
+            "cravatta"=>"Ties",
+            "infraditoeciabatte"=>"Flip Flops",
+            "felpa"=>"Sweatshirts",
+            "slip"=>"Slip-on",
+            "guanti"=>"Gloves",
+            "sciarpe"=>"Scarves",
+            "culotte"=>"Brief",
+            "giaccaclassica"=>"Suits",
+            "portadocumenti"=>"Briefcases",
+            "daviaggio"=>"Travel bags",
+            "impermeabile"=>"Trench coat",
+            "occhialedavista"=>"Eyeglasses",
+            "canotta"=>"Tank tops",
+            "perizoma"=>"G-strings",
+            "etichettebagaglio"=>"Baggage labels",
+            "abitiuomo"=>"Suits",
+            "beautycase"=>"Cases"
         );
         if(isset($lang_arr[$key])){
             return $lang_arr[$key];

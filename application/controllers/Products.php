@@ -52,6 +52,7 @@ class Products extends REST_Controller {
         
     }
      public function upload_xml_into_db(){
+         ini_set('max_execution_time', 300000);
         $xml = new XMLReader(FCPATH. 'resources'); // Download and state files!
         $xml->setCredentials(
             'https://www.brandsdistribution.com/restful/export/api/products.xml', // endpoint
@@ -226,6 +227,7 @@ class Products extends REST_Controller {
         
     }
     public function upload_products_gonzoo_get(){
+        ini_set('max_execution_time', 300000);
         $i=0;
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products";
         $return=array();
@@ -256,11 +258,14 @@ class Products extends REST_Controller {
 //                    $variants[]=$variants_1;
 //                }
                 $option_values1[]=array("option_display_name"=>"Color",'label'=>$color1);
-                $variants_1=array("sku"=>"SKU-". strtoupper($color1),
+                $variants_1=array(
+                    "sku"=>'BD-'.$prod['product_id'],
                     'weight'=>$prod['weight'],
-                    'product_id'=>$prod['product_id'],
+                    'product_id'=>(int)$prod['product_id'],
                     'retail_price'=>$prod['street_price'],
-                    'option_values'=>$option_values1);
+                    'is_free_shipping'=>true,
+                    'option_values'=>$option_values1
+                    );
                 $variants[]=$variants_1;
                 $images=array();
                 if(trim($prod['picture1']) !=""){
@@ -302,6 +307,10 @@ class Products extends REST_Controller {
                 $res=$temp;
                 $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
                 $product_det= json_decode($product_details,true);
+                error_log(print_r($prod['Categorie']."=".$prod['service']."=".$prod['Sottocategorie'],true),3,"/var/log/test.log");
+                error_log(print_r($categories,true),3,"/var/log/test.log");
+                error_log(print_r($product_det,true),3,"/var/log/test.log");
+                error_log(print_r("===================================================================",true),3,"/var/log/test.log");
                 if(isset($product_det['data'])){
                     $product_id=$product_det['data']['id'];
                     $this->set_meta_data_branddistro($product_id);
