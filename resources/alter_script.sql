@@ -207,7 +207,8 @@ INSERT INTO `categories` (`id`, `bigcommerce_cat`, `bigcommerce_Sottocategorie`,
 (125, 'accessories', 'accessories', 'women', 'Women', 'Accessories', 'Sunglasses'),
 (125, 'accessories', 'accessories', 'women', 'Women', 'Accessories', 'Wallets'),
 (125, 'accessories', 'accessories', 'women', 'Women', 'Accessories', 'Eyeglasses'),
-(486, 'underwear', 'underwear', 'kids-baby', 'Kids', 'Underwear', 'French knickers');
+(486, 'underwear', 'underwear', 'kids-baby', 'Kids', 'Underwear', 'French knickers'),
+(474, 'bags', 'bags', 'men', 'Men', 'Bags', 'Shoulder bags');
 
 -- --------------------------------------------------------
 
