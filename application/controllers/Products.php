@@ -80,6 +80,7 @@ class Products extends REST_Controller {
             //$temp['plain_description']= strip_tags($node_arr['description']);
             $temp['plain_description']= $node_arr['description'];
             $picture=xml2array($node_arr['pictures']['image']);
+            $models=xml2array($node_arr['models']['model']);
             $temp['picture1']=isset($picture[0]['url'])?"https://www.brandsdistribution.com".$picture[0]['url']:"";
             $temp['picture2']=isset($picture[1]['url'])?"https://www.brandsdistribution.com".$picture[1]['url']:"";
             $temp['picture3']=isset($picture[2]['url'])?"https://www.brandsdistribution.com".$picture[2]['url']:"";
@@ -106,7 +107,10 @@ class Products extends REST_Controller {
             $models_arr= xml2array($node_arr['models']['model']);
             $model_quantity= sizeof($models_arr);
             $temp['model_quantity']=$model_quantity;
+            error_log(print_r($models,true),3,"/tmp/test.log");
+            error_log(print_r($node_arr,true),3,"/tmp/test.log");
             $this->products_model->upload_xls_into_db($temp);
+            $this->products_model->upload_models_into_db($models,$temp['product_id']);
         }
 
      }
@@ -166,7 +170,7 @@ class Products extends REST_Controller {
     }
     public function send_order_to_branddistribution_get(){
         $url="https://api.bigcommerce.com/stores/".STORE."/v2/orders";
-        //$res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,FCPATH."/resources/orders.json");
+        $res=$this->bigcommerceapi->big_commerce_get_and_store_file($url,FCPATH."/resources/orders.json");
         $listener = new \JsonStreamingParser\Listener\InMemoryListener();
         $stream = fopen(FCPATH."resources/orders.json", 'rb');
         try {

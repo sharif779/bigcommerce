@@ -40,6 +40,55 @@ class Products_model extends CI_Model {
             $this->db->update('branddistribution_products', $data);
         }
     }
+    public function upload_models_into_db($data,$product_id){
+        if(isset($data[0])){
+            foreach($data as $val){
+                $fields=$this->db->list_fields('models');
+                foreach($val as $key=>$v){
+                    if(!in_array($key, $fields)){
+                        unset($val[$key]);
+                    }
+                    if(is_array($v)){
+                        $val[$key]=json_encode($v);
+                    }
+                }
+                $val['product_id']=$product_id;
+                $this->db->where('id', $val['id']);
+                $this->db->from('models');
+                $count = $this->db->count_all_results();
+                if($count==0){
+                    $this->db->insert('models', $val);
+                }else{
+                    unset($val['id']);
+                    $this->db->update('models', $val);
+                }
+            }
+        }else{//if single array
+            if(isset($data['id']) && isset($data['model'])){
+                $fields=$this->db->list_fields('models');
+                $val=$data;
+                foreach($val as $key=>$v){
+                    if(!in_array($key, $fields)){
+                        unset($val[$key]);
+                    }
+                    if(is_array($v)){
+                        $val[$key]=json_encode($v);
+                    }
+                }
+                $val['product_id']=$product_id;
+                $this->db->where('id', $val['id']);
+                $this->db->from('models');
+                $count = $this->db->count_all_results();
+                if($count==0){
+                    $this->db->insert('models', $val);
+                }else{
+                    unset($val['id']);
+                    $this->db->update('models', $val);
+                }
+            }
+        }
+        
+    }
     public function upload_categories_into_db($data){
         if(isset($data['id']) && isset($data['parent_id'])){
             $val['id']=$data['id'];

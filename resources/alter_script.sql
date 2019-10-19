@@ -257,3 +257,23 @@ CREATE TABLE `logs` (
 --
 ALTER TABLE `branddistribution_products`
   ADD PRIMARY KEY (`code`);
+
+
+DROP TABLE IF EXISTS `models`;
+CREATE TABLE `models` (
+  `id` int(50) DEFAULT NULL,
+  `product_id` int(50) DEFAULT NULL,
+  `availability` int(50) DEFAULT NULL,
+  `backorder` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `barcode` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bestTaxable` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `code` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `color` text COLLATE utf8_unicode_ci,
+  `lastUpdate` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `model` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `size` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `streetPrice` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `suggestedPrice` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `taxable` text COLLATE utf8_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
