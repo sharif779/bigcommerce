@@ -362,6 +362,59 @@ class Products extends REST_Controller {
         $temp["namespace"]="shipping.shipperhq";
         $res=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
     }
+    public function send_size_variants_gonzoo_get(){
+        ini_set('max_execution_time', 300000);
+        $i=0;
+        while(true){
+            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
+            foreach($products as $prod){
+                $product_id=$prod['product_id'];
+                $models=$this->products_model->get_products_model_by_id($product_id);
+                if(empty($models)){
+                    continue;
+                }
+                $temp=array();
+                $temp['product_id']=$product_id;
+                $temp['name']="Size Rectangle";
+                $temp['display_name']="Size";
+                $temp['type']="rectangles";
+                $temp['option_values']=array();
+                $size_arr=array();
+                foreach($models as $model){
+                    if(isset($model['size']) && strtolower($model['size'])!="nosize" && $model['size'] !="" ){
+                        if(!in_array($model['size'], $size_arr)){
+                            array_push($size_arr,$model['size']);
+                        }
+                    }
+                }
+                foreach($size_arr as $key=>$size){
+                    $option_values_arr=array();
+                    $default=false;
+                    if($key==0){
+                        $default=true;
+                    }
+                    $option_values_arr['label']=$size;
+                    $option_values_arr['sort_order']=$key;
+                    $option_values_arr['is_default']=$default;
+                    $temp['option_values'][]=$option_values_arr;
+                    
+                }
+                $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products/$product_id/options";
+                $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
+                $product_det= json_decode($product_details,true);
+                if(isset($product_det['data'])){
+                    $this->products_model->sync_models_insert_flag_db($product_id);
+                }
+                error_log(print_r($product_det,true),3,"/var/log/test.log");
+            }
+            
+            if(sizeof($products)<499){
+                break;
+            }
+            $i=$i+500;
+        }
+        $this->response("Successfully product added", REST_Controller::HTTP_OK);
+    }
     public function test_get(){
         $prod['product_id']=103275;
         $variants=array();

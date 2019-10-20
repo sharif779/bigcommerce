@@ -56,4 +56,5 @@ $route['api/v'.API_VERSION.'/products_sync_branddistribution']['GET']="products/
 $route['api/v'.API_VERSION.'/products_upload_gonzoo']['GET']="products/upload_products_gonzoo";//Get User
 //$route['api/v'.API_VERSION.'/categories_sync_db']['GET']="products/upload_categories_db";//Get User
 $route['api/v'.API_VERSION.'/send_order']['GET']="products/send_order_to_branddistribution";//Get User
+$route['api/v'.API_VERSION.'/send_size_variants_gonzoo']['GET']="products/send_size_variants_gonzoo";//Get User
 $route['api/v'.API_VERSION.'/test']['GET']="products/test";//Get User

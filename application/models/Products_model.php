@@ -138,6 +138,7 @@ class Products_model extends CI_Model {
     }
     public function get_products_model_by_id($product_id){
         $this->db->where("product_id",$product_id);
+        $this->db->where("insert_flag",0);
         $models=$this->db->get('models')->result_array();
         return $models;
     }
@@ -154,6 +155,13 @@ class Products_model extends CI_Model {
         $this->db->set('insert_flag',1);
         $this->db->where("product_id",$product_id);
         $this->db->update('branddistribution_products');
+        
+    }
+    public function sync_models_insert_flag_db($product_id){
+        
+        $this->db->set('insert_flag',1);
+        $this->db->where("product_id",$product_id);
+        $this->db->update('models');
         
     }
     public function get_german_english_word($key){//one types of hack ....need to quick solved
