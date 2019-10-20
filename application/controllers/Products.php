@@ -269,14 +269,14 @@ class Products extends REST_Controller {
                     $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color),'option_values'=>$option_values);
                     $variants[]=$variants_arr;
                 }
-                //size variants
-                foreach($size_arr as $size){
-                    $option_values=array();
-                    $size_sku=preg_replace('/\s+/', '', $size);
-                    $option_values[]=array("option_display_name"=>"Size",'label'=>$size);
-                    $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($size_sku),'option_values'=>$option_values);
-                    $variants[]=$variants_arr;
-                }
+//                //size variants
+//                foreach($size_arr as $size){
+//                    $option_values=array();
+//                    $size_sku=preg_replace('/\s+/', '', $size);
+//                    $option_values[]=array("option_display_name"=>"Size",'label'=>$size);
+//                    $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($size_sku),'option_values'=>$option_values);
+//                    $variants[]=$variants_arr;
+//                }
                 
                 $images=array();
                 if(trim($prod['picture1']) !=""){
