@@ -136,6 +136,11 @@ class Products_model extends CI_Model {
         $result = $this->db->get('branddistribution_products')->result_array();
         return $result;
     }
+    public function get_products_model_by_id($product_id){
+        $this->db->where("product_id",$product_id);
+        $models=$this->db->get('models')->result_array();
+        return $models;
+    }
     //get count all rows from table
     public function get_count_rows($table){
         $rows=$this->db->from($table)->count_all_results();

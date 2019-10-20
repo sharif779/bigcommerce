@@ -247,20 +247,37 @@ class Products extends REST_Controller {
                 $option_values2=array();
                 $categories=$this->products_model->get_Categorie_id_db($prod['Categorie'],$prod['service'],$prod['Sottocategorie']);
                 $variants=array();
-                $color1=$prod['color'];
-                $color2=$prod['bicolors'];
-                if($color1!=$color2){
-                    $option_values1[]=array("option_display_name"=>"Color",'label'=>$color1);
-                    $option_values2[]=array("option_display_name"=>"Color",'label'=>$color2);
-                    $variants_1=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color1),'option_values'=>$option_values1);
-                    $variants_2=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color2),'option_values'=>$option_values2);
-                    $variants[]=$variants_1;
-                    $variants[]=$variants_2;
-                }else{
-                    $option_values1[]=array("option_display_name"=>"Color",'label'=>$color1);
-                    $variants_1=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color1),'option_values'=>$option_values1);
-                    $variants[]=$variants_1;
+                $color_arr=array();
+                $size_arr=array();
+                $models=$this->products_model->get_products_model_by_id($prod['product_id']);
+                foreach($models as $model){
+                    if(isset($model['size']) && strtolower($model['size'])!="nosize" && $model['size'] !="" ){
+                        if(!in_array($model['size'], $size_arr)){
+                            array_push($size_arr,$model['size']);
+                        }
+                    }
+                    if(isset($model['color']) && $model['color'] !="" ){
+                        if(!in_array($model['color'], $color_arr)){
+                            array_push($color_arr,$model['color']);
+                        }
+                    }
                 }
+                //color _variants
+                foreach($color_arr as $color){
+                    $option_values=array();
+                    $option_values[]=array("option_display_name"=>"Color",'label'=>$color);
+                    $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color),'option_values'=>$option_values);
+                    $variants[]=$variants_arr;
+                }
+                //size variants
+                foreach($size_arr as $size){
+                    $option_values=array();
+                    $size_sku=preg_replace('/\s+/', '', $size);
+                    $option_values[]=array("option_display_name"=>"Size",'label'=>$size);
+                    $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($size_sku),'option_values'=>$option_values);
+                    $variants[]=$variants_arr;
+                }
+                
                 $images=array();
                 if(trim($prod['picture1']) !=""){
                     $images[]=array(
@@ -344,6 +361,42 @@ class Products extends REST_Controller {
         $temp["value"]="000002";
         $temp["namespace"]="shipping.shipperhq";
         $res=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
+    }
+    public function test_get(){
+        $prod['product_id']=103275;
+        $variants=array();
+        $color_arr=array();
+        $size_arr=array();
+        $models=$this->products_model->get_products_model_by_id(103275);
+        foreach($models as $model){
+            if(isset($model['size']) && strtolower($model['size'])!="nosize" && $model['size'] !="" ){
+                if(!in_array($model['size'], $size_arr)){
+                    array_push($size_arr,$model['size']);
+                }
+            }
+            if(isset($model['color']) && $model['color'] !="" ){
+                if(!in_array($model['color'], $color_arr)){
+                    array_push($color_arr,$model['color']);
+                }
+            }
+        }
+        //color _variants
+        foreach($color_arr as $color){
+            $option_values=array();
+            $option_values[]=array("option_display_name"=>"Color",'label'=>$color);
+            $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($color),'option_values'=>$option_values);
+            $variants[]=$variants_arr;
+        }
+        //size variants
+        foreach($size_arr as $size){
+            $option_values=array();
+            $size_sku=preg_replace('/\s+/', '', $size);
+            $option_values[]=array("option_display_name"=>"Size",'label'=>$size);
+            $variants_arr=array("sku"=>'BD-'.$prod['product_id']."-". strtoupper($size_sku),'option_values'=>$option_values);
+            $variants[]=$variants_arr;
+        }
+        error_log(print_r($variants,true),3,"/var/log/test.log");
+        
     }
     
 }
