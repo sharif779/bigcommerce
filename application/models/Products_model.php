@@ -150,9 +150,10 @@ class Products_model extends CI_Model {
     public function truncate_table($table_name){
         $this->db->truncate($table_name);
     }
-    public function sync_insert_flag_db($product_id){
+    public function sync_insert_flag_db($product_id,$bigcommerce_prod_id){
         
         $this->db->set('insert_flag',1);
+        $this->db->set('bigcommerce_product_id',$bigcommerce_prod_id);
         $this->db->where("product_id",$product_id);
         $this->db->update('branddistribution_products');
         

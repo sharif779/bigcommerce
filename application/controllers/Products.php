@@ -325,7 +325,8 @@ class Products extends REST_Controller {
                 if(isset($product_det['data'])){
                     $product_id=$product_det['data']['id'];
                     $this->set_meta_data_branddistro($product_id);
-                    $this->products_model->sync_insert_flag_db($prod['product_id']);
+                    $this->send_size_variants_gonzoo($prod['product_id'],$product_id);
+                    $this->products_model->sync_insert_flag_db($prod['product_id'],$product_id);
                 }
             }
             if(sizeof($products)<499){
@@ -362,17 +363,10 @@ class Products extends REST_Controller {
         $temp["namespace"]="shipping.shipperhq";
         $res=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
     }
-    public function send_size_variants_gonzoo_get(){
-        ini_set('max_execution_time', 300000);
-        $i=0;
-        while(true){
-            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
-            foreach($products as $prod){
-                $product_id=$prod['product_id'];
+    public function send_size_variants_gonzoo($product_id,$bigcommerce_prod_id){
+                
                 $models=$this->products_model->get_products_model_by_id($product_id);
-                if(empty($models)){
-                    continue;
-                }
+               
                 $temp=array();
                 $temp['product_id']=$product_id;
                 $temp['name']="Size Rectangle";
@@ -399,20 +393,15 @@ class Products extends REST_Controller {
                     $temp['option_values'][]=$option_values_arr;
                     
                 }
-                $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products/$product_id/options";
+                $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products/$bigcommerce_prod_id/options";
                 $product_details=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
                 $product_det= json_decode($product_details,true);
+                error_log(print_r($product_det,true),3,"/var/log/test.log");
                 if(isset($product_det['data'])){
                     $this->products_model->sync_models_insert_flag_db($product_id);
                 }
-                error_log(print_r($product_det,true),3,"/var/log/test.log");
-            }
-            
-            if(sizeof($products)<499){
-                break;
-            }
-            $i=$i+500;
-        }
+           
+        
         $this->response("Successfully product added", REST_Controller::HTTP_OK);
     }
     public function test_get(){
