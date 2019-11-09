@@ -236,7 +236,8 @@ class Products extends REST_Controller {
         $url="https://api.bigcommerce.com/stores/".STORE."/v3/catalog/products";
         $return=array();
         while(true){
-            $products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
+            //$products=$this->products_model->get_branddistribution_data(500,$i);//limit,offset
+            $products=$this->products_model->get_branddistribution_data(5,$i);//limit,offset
             $res=array();
             foreach($products as $prod){
                 if($prod['insert_flag']==1 || $prod['record_type']=="MODEL"){
@@ -307,6 +308,9 @@ class Products extends REST_Controller {
                 $temp['price']=$this->convert_price($prod['price_novat'])+$prod['income'];
                 $temp['categories']=$categories;
                 $temp['images']=$images;
+                $temp['inventory_level']=$prod['product_quantity'];
+                $temp['inventory_warning_level']=($prod['product_quantity']==0)?$prod['product_quantity']:$prod['product_quantity']-1;
+                $temp['inventory_tracking']='product';
                 $temp['variants']=$variants;
                 //$temp['Origin Locations']='000002';
 		$temp['custom_fields']=array(
@@ -321,6 +325,7 @@ class Products extends REST_Controller {
                 error_log(print_r($prod['Categorie']."=".$prod['service']."=".$prod['Sottocategorie'],true),3,"/var/log/test.log");
                 error_log(print_r($categories,true),3,"/var/log/test.log");
                 error_log(print_r($product_det,true),3,"/var/log/test.log");
+                error_log(print_r($res,true),3,"/var/log/test.log");
                 error_log(print_r("===================================================================",true),3,"/var/log/test.log");
                 if(isset($product_det['data'])){
                     $product_id=$product_det['data']['id'];
@@ -329,10 +334,12 @@ class Products extends REST_Controller {
                     $this->products_model->sync_insert_flag_db($prod['product_id'],$product_id);
                 }
             }
-            if(sizeof($products)<499){
+            //if(sizeof($products)<499){
+            if($i>5){
                 break;
             }
-            $i=$i+500;
+//            $i=$i+500;
+            $i=$i+5;
         }
         $this->response("Successfully product added", REST_Controller::HTTP_OK);
         
@@ -345,7 +352,7 @@ class Products extends REST_Controller {
         if(isJson($res)){
             $data= json_decode($res,true);
             foreach ($data as $dta){
-                if($dta['currency_code']=$price_to){
+                if(isset($dta['currency_code']) && $dta['currency_code']=$price_to){
                     $convert_price=$price/$dta['currency_exchange_rate'];
                 }
             }
@@ -359,7 +366,7 @@ class Products extends REST_Controller {
         $temp=array();
         $temp["permission_set"]="write";
         $temp["key"]="shipping-origins";
-        $temp["value"]="000002";
+        $temp["value"]="[\"000002\"]";
         $temp["namespace"]="shipping.shipperhq";
         $res=$this->bigcommerceapi->big_commerce_post($url, json_encode($temp));
     }
